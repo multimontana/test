@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateJsonDataTable extends Migration
+class CreateBlogsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,11 @@ class CreateJsonDataTable extends Migration
      */
     public function up()
     {
-        Schema::create('json_data', function (Blueprint $table) {
+        Schema::create('blogs', function (Blueprint $table) {
             $table->id();
-            $table->json('json_file');
+            $table->char('title');
+            $table->text('description');
+            $table->integer('parent_id');
             $table->timestamps();
         });
     }
@@ -27,6 +29,6 @@ class CreateJsonDataTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('json_data');
+        Schema::dropIfExists('blogs');
     }
 }

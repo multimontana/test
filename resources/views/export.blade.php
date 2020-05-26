@@ -13,7 +13,7 @@
         <div class="card-body">
             <div>
                 @if($csvFileName)
-                    <a href="<?=$csvFileName?>">Export</a>
+                    <a download href="<?=$csvFileName?>">Export</a>
                 @endif
             </div>
         </div>
