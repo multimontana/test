@@ -9,14 +9,17 @@ use Illuminate\Http\Request;
 class ImportExportController extends Controller
 {
     /**
-     *
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function importExportView()
     {
-
         return view('importexport');
     }
 
+    /**
+     * @param Request $request
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function import(Request $request)
     {
         $request->validate(['file' => 'required|max:10000|mimes:json,xml,csv']);
@@ -41,9 +44,9 @@ class ImportExportController extends Controller
             }
         }
 
-        $csvFileName = 'json_data/'.$request->file('file')->getClientOriginalName();
+        $csvFileName = 'json_data/' . $request->file('file')->getClientOriginalName();
 
-       $fp = fopen($csvFileName, 'w');
+        $fp = fopen($csvFileName, 'w');
 
         foreach ($file_content as $row) {
             fputcsv($fp, (array)$row);

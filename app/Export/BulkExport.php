@@ -14,8 +14,8 @@ class BulkExport implements ToModel
     public function model(array $row)
     {
         return new Bulk([
-            'name'     => $row['name'],
-            'email'    => $row['email'],
+            'name' => $row['name'],
+            'email' => $row['email'],
         ]);
     }
 }
