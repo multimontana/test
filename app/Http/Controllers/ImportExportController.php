@@ -4,10 +4,20 @@ namespace App\Http\Controllers;
 
 use App\Blog;
 use App\Category;
-use Illuminate\Http\Request;
+use App\News;
+use App\Request\ImportValidateRequest;
+use App\Service\ImportService;
+use App\Status\Status;
 
 class ImportExportController extends Controller
 {
+    private $services;
+
+    public function __construct(ImportService $service)
+    {
+        $this->services = $service;
+    }
+
     /**
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
@@ -17,44 +27,12 @@ class ImportExportController extends Controller
     }
 
     /**
-     * @param Request $request
+     * @param ImportValidateRequest $request
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function import(Request $request)
+    public function import(ImportValidateRequest $request)
     {
-        $request->validate(['file' => 'required|max:10000|mimes:json,xml,csv']);
-        $pieces = explode(".", $request->file('file')->getClientOriginalName());
-        $file_content = json_decode(file_get_contents($request->file('file')->getRealPath()));
-        foreach ($file_content as $row) {
-            $cat = Category::updateOrCreate(['name' => $row->category], [
-                'name' => $row->category
-            ]);
-            if ($row->category === "blog") {
-                Blog::create([
-                    'title' => $row->title,
-                    'description' => $row->body,
-                    'parent_id' => $cat->id
-                ]);
-            } else {
-                Blog::create([
-                    'title' => $row->title,
-                    'description' => $row->body,
-                    'parent_id' => $cat->id
-                ]);
-            }
-        }
-
-        $csvFileName = 'json_data/' . $request->file('file')->getClientOriginalName();
-
-        $fp = fopen($csvFileName, 'w');
-
-        foreach ($file_content as $row) {
-            fputcsv($fp, (array)$row);
-        }
-
-        fclose($fp);
-
-        return view('export', compact('csvFileName'));
+        return view('export', ['csvFileName' => $this->services->import($request), 'status' => Status::CREATED]);
     }
 
 
